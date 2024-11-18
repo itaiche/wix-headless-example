@@ -1,5 +1,6 @@
 import { createServer } from 'http';
 import { readFileSync } from 'fs';
+import { spawn } from 'node:child_process';
 
 const PORT = 3000;
 
@@ -36,14 +37,16 @@ const server = createServer((req, res) => {
     } 
 });
 
+const serverURL = `http://localhost:${PORT}`;
 server.listen(PORT);
+spawn('open', [`${serverURL}/index.html`]);
+console.log(`Server now running on ${serverURL}`);
 
 const JS_FILE_PATH =  './src/js/';
 const CSS_FILE_PATH =  './src/css/';
 const HTML_FILE_PATH =  './src/';
 
 function loadFile(fileName){
-    console.log('Loading ', fileName);
     const suffix = fileName.split('.').pop();
 
     let resultFile;
@@ -51,19 +54,16 @@ function loadFile(fileName){
 
     if(suffix === 'js') {
        const filePath = `${JS_FILE_PATH}${fileName}`;
-       console.log(filePath);
        resultFile = readFileSync(filePath, { encoding:'utf-8' });
        type = 'js';
     } 
     if(suffix === 'html') {
        const filePath = `${HTML_FILE_PATH}${fileName}`;
-       console.log(filePath);
        resultFile = readFileSync(filePath, { encoding:'utf-8' });
        type = 'html';
     }
     if(suffix === 'css') {
         const filePath = `${CSS_FILE_PATH}${fileName}`;
-        console.log(filePath);
         resultFile = readFileSync(filePath, { encoding:'utf-8' });
         type = 'css';
     } 

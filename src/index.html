@@ -8,7 +8,7 @@
     This page uses <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage" target="_blank">localStorage</a> to store all the data needed for the flows. <br/> 
     When you click the buttons we <a href="https://dev.wix.com/docs/go-headless/coding/rest-api/visitors-and-members/handle-members-with-wix-managed-login#login-request" target="_blank">create a login redirect session</a> for a page in this site.<br/>
     At the end of the process, on the callback page, you will have an active logged in member on your site and the Wix site.<br/>  
-    <button id="getLoginCallback">Start Login Flow with Redirect to callback page</button> <br/>
+    <button id="getLoginCallback">Create login session on Wix</button> <br/>
     <a id="redirectLink"></a>
 </p>
 <script type="module">
@@ -110,7 +110,7 @@
 
     function setRedirectLink(fullUr) {
         let link = document.getElementById('redirectLink');
-        const linkText = 'Redirect link for Callback page ready';
+        const linkText = `${new Date().toTimeString()} Link for login ready, click here!`;
         const linkHref = fullUr;
         link.innerText = linkText;
         link.href = linkHref;
