@@ -37,8 +37,9 @@ To run this project:
 ## Testing your own site
 If you want to test this on your site, you need to:   
 * update the <a href="src/js//consts.js">consts files</a> to your [Headless App configuration](https://dev.wix.com/docs/go-headless/getting-started/setup/authentication/create-an-oauth-app-for-visitors-and-members)
-* make sure you updated your headless site to support the URLs in the consts (<a href="src//images/headless settings.png">example 
-config</a>)
+* make sure you updated your headless site to support the URLs in the consts example 
+config:
+<img src="src/images/headless settings.png"></img>
 
 ### Code Flow index.html
 What this code does as it loads:    
