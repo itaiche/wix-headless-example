@@ -1,5 +1,5 @@
 {
-  "name": "headless-example",
+  "name": "wix-headless-example",
   "version": "1.0.0",
   "description": "A simple example for using Wix headless ",
   "scripts": {

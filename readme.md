@@ -49,7 +49,7 @@ What this code does as it loads:
 4. If it doesn't exist, create a new visitor with a refresh and access token and store them in local storage  
 
 When clicking the button:  
-1. Take the refresh token from the local storage
+1. Take the access token from the local storage
 2. Call the Wix API to create a redirect login session with the local <a href="src/callback.html">callback.html page</a>
 3. Render a link to go to login and focus it
 
@@ -60,3 +60,4 @@ After you complete the login flow, you will be redirected to the local callback 
 1. Checks for the [hash](https://developer.mozilla.org/en-US/docs/Web/API/URL/hash) containing the `code` and `state` data 
 2. If the data doesn't exist it will redirect to the `index.html`
 3. If it does, the page will call Wix to complete the flow and get member access and refresh tokens 
+4. Stores them in localStorage
