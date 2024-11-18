@@ -22,7 +22,7 @@ To run this project:
 
 * [consts.js](src/js/consts.js) - contains all the configuration you created in your [headless app on your Wix site](https://dev.wix.com/docs/go-headless/getting-started/setup/authentication/create-an-oauth-app-for-visitors-and-members)    
 * [oAuth.js](src//js//oAuth.js) - has all the [API calls we will be using](https://dev.wix.com/docs/go-headless/coding/rest-api/visitors-and-members/handle-visitors)  
-* [PKXE.js](src/js/PKCE.js) - has all the logic for creating a [code challenge and code verifier](https://datatracker.ietf.org/doc/html/rfc7636#section-4.2) for the login flow   
+* [PKCE.js](src/js/PKCE.js) - has all the logic for creating a [code challenge and code verifier](https://datatracker.ietf.org/doc/html/rfc7636#section-4.2) for the login flow   
 * [utilities.js](src//js/utilities.js) - handles all the storing of data in [localStorage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage) and exposes sugar syntax APIs for getting and setting data   
 * [log.js](src/js/log.js) - writes the logs to the UI   
 * [server.mjs](src/server.mjs) - serves the files locally using NodeJS  
