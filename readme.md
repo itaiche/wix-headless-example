@@ -1,4 +1,4 @@
-Wix Headless Example
+[Wix Headless](https://dev.wix.com/docs/go-headless) Example
 ----------------
 This example is written in pure JS for:
 * Visitor session creation and refresh using Wix headless app on a domain that is not the Wix site 
