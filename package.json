@@ -1,0 +1,22 @@
+{
+  "name": "headless-example",
+  "version": "1.0.0",
+  "description": "A simple example for using Wix headless ",
+  "scripts": {
+    "dev": "node src/server.mjs",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "type": "module",
+  "keywords": [
+    "headless",
+    "wix",
+    "html",
+    "no",
+    "client"
+  ],
+  "author": "itaich@wix.com",
+  "license": "ISC",
+  "engines": { 
+    "node": ">=18.0.0"
+  }
+}

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<head>
+    <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>  
+    <p id="info">
+        This page looks at the URL Hash and extracts two parameters from it: <br/>    
+        * <i>state</i> - state is what we passed in to get login URL request <br/>
+        * <i>code</i> - is the Authorization Code returned from the system  <br/>
+        Then it calls the <i>/token</i> endpoint to get the <a href="https://dev.wix.com/docs/go-headless/coding/rest-api/visitors-and-members/handle-members-with-wix-managed-login#login-callback" target="_blank">logged In Session for this domain</a>.
+        The response we get is member access token and a refresh token.<br/>
+        Now, the user is logged in at the IDP site - this means we can now redirect to it if we want.  
+        <br/>
+    </p>
+    <br/>
+    <a target="_blank" id="siteLink"></a>
+    <h2>Log</h2>
+    <div id="log">
+    </div>
+    <script type="module">
+        import { clientId, siteUrl } from './js/consts.js';
+        import {  getPostLoginTokens } from './js/oAuth.js';
+        import { log, error } from './js/log.js';
+        import { 
+            getCodeVerifier, 
+            getState, 
+            storage 
+        } from './js/utilities.js'
+        
+        const { code, state } = getHashParamers();
+        if(!state || !code) {
+            window.location.href = window.location.href.replace('callback.html', 'index.html');  
+        }
+        if(getState() === state) {
+            window.location.hash = '';
+            const challengeVerifier = getCodeVerifier();
+            getPostLoginTokens(clientId, location.href.split('#')[0], code, challengeVerifier)
+            .then(tokens => {
+                handleTokenResponse(tokens);
+            })
+            .catch(e => {
+                error(`Failed to fetch post login tokens ${e.message}`);
+            });
+        } else {
+            error(`The returned state ${getState()} does not match the URL state ${state}`);
+        } 
+
+        function handleTokenResponse(tokens){
+            const { refresh_token, access_token, expires_in } = tokens; 
+            if(refresh_token && access_token) {
+                log(`Got Member Tokens response ${JSON.stringify(tokens, null, 4)}`);
+                storage.setMemberRefreshToken(refresh_token);
+                storage.setMemberAccessToken(access_token, expires_in);
+                setSiteUrl(siteUrl);
+            } else {
+                error(`Error in Member Tokens response ${JSON.stringify(tokens, null, 4)}`);
+            }
+        }
+
+        function setSiteUrl(siteUrlPostFlow){
+            const siteLink = document.getElementById('siteLink');
+            siteLink.href = siteUrlPostFlow;
+            siteLink.innerText = 'Go to site of already logged in Member!';
+        }
+
+        function getHashParamers(){
+            const hashResult = {};
+            location.hash.replace('#', '').split('&').forEach(pair => {
+                const [key, value] = pair.split('=');
+                if(key && value) {
+                    hashResult[key] = value;
+                }
+            });
+            return hashResult;
+        }
+    </script>
+</body>

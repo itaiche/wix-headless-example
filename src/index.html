@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<head>
+    <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+<p id="info">
+    In this page we will <a href='https://dev.wix.com/docs/go-headless/coding/rest-api/visitors-and-members/handle-visitors#generate-new-visitor-tokens' target="_blank">create a visitor session</a> with headless or <a href='https://dev.wix.com/docs/go-headless/coding/rest-api/visitors-and-members/handle-visitors#renew-visitor-tokens'>refresh an existing one</a>. <br/>
+    This page uses <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage" target="_blank">localStorage</a> to store all the data needed for the flows. <br/> 
+    When you click the buttons we <a href="https://dev.wix.com/docs/go-headless/coding/rest-api/visitors-and-members/handle-members-with-wix-managed-login#login-request" target="_blank">create a login redirect session</a> for a page in this site.<br/>
+    At the end of the process, on the callback page, you will have an active logged in member on your site and the Wix site.<br/>  
+    <button id="getLoginCallback">Start Login Flow with Redirect to callback page</button> <br/>
+    <a id="redirectLink"></a>
+</p>
+<script type="module">
+    import { 
+        log, 
+        error 
+    } from './js/log.js';
+    import {  
+        getVisitorTokens, 
+        refresAccessTokens, 
+        getLoginUrl 
+    } from './js/oAuth.js';
+    import { 
+        storage, 
+        createAndStoreCodeChallenge,
+        createAndStoreState
+    } from './js/utilities.js';   
+    import { 
+        clientId, 
+        redirectCallbackUrl, 
+        siteUrl 
+    } from './js/consts.js';
+    
+    /*********
+     *  Here we create or refresh the visitor and store the tokens output
+     *********/ 
+    log('Starting visitor flow');
+
+    const refreshToken = storage.getVisitorRefreshToken();
+    if(refreshToken) {
+        log('Got refresh token, refreshing access tokens');
+        refresAccessTokens(refreshToken)
+        .then(tokens => {
+            handleTokenResponse(tokens);
+        })
+        .catch(e => {
+            error('Failed to refreh tokens');
+            error(e.message);
+        });
+    } else {
+        getVisitorTokens(clientId)
+        .then(tokens => {
+            handleTokenResponse(tokens);
+        }).catch(e => {
+            error('Failed to get visitor tokens');
+            error(e.message);
+        });
+    } 
+
+    function handleTokenResponse(tokens){
+        log(`Got refresh and access tokens ${JSON.stringify(tokens, null, 4)}`);
+        const { refresh_token, access_token, expires_in } = tokens; 
+        storage.setVisitorRefreshToken(refresh_token);
+        storage.setVisitorAccessToken(access_token, expires_in);
+    }
+</script>
+
+<script type="module">
+    import { log, error } from './js/log.js';
+    import {  getLoginUrl } from './js/oAuth.js';
+    import {  
+        storage, 
+        createAndStoreState, 
+        createAndStoreCodeChallenge 
+    } from './js/utilities.js';
+    import { 
+        redirectCallbackUrl, 
+        clientId 
+    } from './js/consts.js';
+    
+    /*********
+     * Here we create the login request URL on the remote IDP.
+     * There will be a link to it added when it is ready.
+     * You can skip creating the link and just redirect the top level page. 
+     *********/ 
+
+    async function getRedirectUrl() {
+        const accessToken = storage.getValidVisitorAccessToken();
+        log(`access token : ${accessToken}`);
+        const codeChallenge = await createAndStoreCodeChallenge();
+        const state = createAndStoreState();
+        getLoginUrl(clientId, accessToken, redirectCallbackUrl, codeChallenge, state)
+        .then(result => {
+            log(`Results: ${JSON.stringify(result, null, 4)}`);
+            const { id, fullUrl, urlDetails } = result.redirectSession; 
+            log(`Got redirect data ${fullUrl}, ${id}`);
+            setRedirectLink(fullUrl);
+        })
+        .catch(e => {
+            error(`Failed to create redirect session ${e.message}`);
+        });
+    } 
+
+    document.getElementById('getLoginCallback')
+    .addEventListener('click', () => {
+        log('Getting redirect URL login and return to callback page');
+        getRedirectUrl();
+    });
+
+    function setRedirectLink(fullUr) {
+        let link = document.getElementById('redirectLink');
+        const linkText = 'Redirect link for Callback page ready';
+        const linkHref = fullUr;
+        link.innerText = linkText;
+        link.href = linkHref;
+        // We set focus on the link to highlight it
+        setTimeout(()=> {
+            link.focus();
+        }, 100);
+    }
+</script>
+<h2>Log</h2>
+<div id="log">
+</div>
+</body>

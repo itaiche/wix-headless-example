@@ -1,0 +1,57 @@
+body, html, *{
+    font-family: monospace;
+    font-size: 20px;
+    background-color: black;
+    color: white;
+}  
+
+#log {
+    border: solid 2px green;
+    border-radius: 10px;
+    margin: 5px;
+    padding: 10px;
+}
+
+#log div {
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    border-bottom: dashed 1px green;
+    word-wrap: break-word;
+}
+
+p {
+   color: white;
+}
+
+p a:visited {
+   color: red;
+}
+
+p button {
+    margin:10px 0px;
+    cursor: pointer;
+    padding: 10px;
+    border: solid 2px white;
+    border-radius: 10px;
+    font-size: 18px;
+}
+
+p button:active {
+    color: red;
+    padding: 8px;
+}
+
+p i {
+    color: red;
+}
+p #redirectLink {
+    color: rgb(255, 255, 255);
+    font-size: 25px;
+} 
+p #redirectLink:focus {
+    background-color: red;
+}
+
+p code {
+    text-decoration: underline;
+} 
